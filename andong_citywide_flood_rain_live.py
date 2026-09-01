@@ -13,7 +13,7 @@ import folium
 POINT_FILE = "안동시_전체_침수우려지점.xlsx"
 
 BOUNDARY_FILE = (
-    r"andong_boundary\bnd_dong_37040_2025_2Q.shp"
+    "andong_boundary/bnd_dong_37040_2025_2Q.shp"
 )
 
 OUT_FILE = (
