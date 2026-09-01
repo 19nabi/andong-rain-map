@@ -1,0 +1,44 @@
+name: Update rainfall map
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-map:
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Seoul
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas geopandas folium requests lxml openpyxl shapely pyogrio
+
+      - name: Run rainfall map script
+        run: |
+          python andong_citywide_flood_rain_live.py
+
+      - name: Replace index.html
+        run: |
+          cp "안동시_침수우려지점_실시간강우_테스트지도.html" index.html
+
+      - name: Commit updated map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "자동 강우지도 갱신"
+          git push
