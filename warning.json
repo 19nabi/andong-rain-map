@@ -1,8 +1,8 @@
 {
-  "active": true,
-  "level": "호우주의보",
-  "area": "안동시",
-  "announce_time": "2026.09.02 15:30",
-  "effective_time": "2026.09.02 15:40",
-  "checked_at": "2026-09-02 15:40:00"
+  "active": false,
+  "level": null,
+  "area": null,
+  "announce_time": null,
+  "effective_time": null,
+  "checked_at": "2026-09-02 16:39:06"
 }
