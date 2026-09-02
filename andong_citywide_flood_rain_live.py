@@ -2641,6 +2641,37 @@ folium.LayerControl(
 
 ).add_to(m)
 
+# LayerControl에서 Folium 내부 macro_element 항목 숨기기
+hide_macro_layer_html = """
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    setTimeout(function() {
+
+        document.querySelectorAll(
+            ".leaflet-control-layers-overlays label"
+        ).forEach(function(label) {
+
+            if (
+                label.textContent
+                    .trim()
+                    .startsWith("macro_element_")
+            ) {
+                label.style.display = "none";
+            }
+
+        });
+
+    }, 500);
+
+});
+</script>
+"""
+
+m.get_root().html.add_child(
+    folium.Element(hide_macro_layer_html)
+)
+
 
 # ============================================================
 # 24. 저장
