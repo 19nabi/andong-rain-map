@@ -975,7 +975,7 @@ m.fit_bounds(
 
 title_html = """
 
-<div style="
+<div id="mapMainTitle" style="
     position:fixed;
     top:12px;
     left:50%;
@@ -2352,22 +2352,34 @@ warning_panel_html = """
 @media screen and (max-width:768px) {
 
     #kmaWarningPanel {
-        top:58px;
-        min-width:220px;
-        max-width:82vw;
-        padding:7px 10px;
+        top:12px;
+        left:50%;
+        right:auto;
+        bottom:auto;
+        transform:translateX(-50%);
+
+        min-width:0;
+        width:auto;
+        max-width:90vw;
+
+        padding:7px 12px;
+        border-radius:7px;
+
+        white-space:nowrap;
     }
 
     #kmaWarningTitle {
-        font-size:12px;
+        display:none;
     }
 
     #kmaWarningLevel {
         font-size:14px;
+        margin:0;
     }
 
     #kmaWarningInfo {
         font-size:9px;
+        margin-top:2px;
     }
 }
 
@@ -2432,6 +2444,19 @@ function loadKmaWarning() {
             panel.style.display =
                 "block";
 
+    // 모바일에서는 특보 발효 시 기존 지도 제목 숨김
+    if (window.innerWidth <= 768) {
+
+        var mapTitle =
+            document.getElementById(
+                "mapMainTitle"
+            );
+
+        if (mapTitle) {
+            mapTitle.style.display = "none";
+        }
+    }
+
             level.innerText =
                 data.level + " 발효 중";
 
@@ -2475,11 +2500,21 @@ function loadKmaWarning() {
                     "rgba(230, 110, 0, 0.97)";
             }
 
-        } else {
+       } else {
 
-            panel.style.display =
-                "none";
-        }
+    panel.style.display =
+        "none";
+
+    // 특보가 없으면 기존 지도 제목 다시 표시
+    var mapTitle =
+        document.getElementById(
+            "mapMainTitle"
+        );
+
+    if (mapTitle) {
+        mapTitle.style.display = "block";
+    }
+}
 
     })
 
