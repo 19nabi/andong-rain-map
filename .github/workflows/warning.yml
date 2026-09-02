@@ -1,0 +1,42 @@
+name: Update KMA warning
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "2/5 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-warning:
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Seoul
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Update KMA warning
+        run: |
+          python kma_warning_update.py
+
+      - name: Commit warning data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add warning.json
+          git diff --cached --quiet || git commit -m "기상청 호우특보 자동 갱신"
+          git push
