@@ -258,6 +258,19 @@ m = folium.Map(
     prefer_canvas=True
 )
 
+# 카카오톡 / SNS 링크 미리보기 설정
+og_meta_html = """
+<meta property="og:type" content="website">
+<meta property="og:title" content="안동시 침수우려지점 분석지도">
+<meta property="og:description" content="안동시 침수우려지점 및 실시간 강우현황">
+<meta property="og:image" content="https://19nabi.github.io/andong-rain-map/preview.png">
+<meta property="og:url" content="https://19nabi.github.io/andong-rain-map/">
+<meta name="twitter:card" content="summary_large_image">
+"""
+
+m.get_root().header.add_child(
+    folium.Element(og_meta_html)
+)
 
 # ============================================================
 # 10. 위성영상
@@ -2633,6 +2646,19 @@ m.get_root().html.add_child(
 # 23. 레이어 선택
 # ============================================================
 
+# Folium 내부 자동 이름 레이어는 체크목록에서 제외
+for child in m._children.values():
+    layer_name = getattr(
+        child,
+        "layer_name",
+        ""
+    )
+
+    if str(layer_name).startswith(
+        "macro_element_"
+    ):
+        child.control = False
+
 folium.LayerControl(
 
     collapsed=False,
@@ -2642,35 +2668,7 @@ folium.LayerControl(
 ).add_to(m)
 
 # LayerControl에서 Folium 내부 macro_element 항목 숨기기
-hide_macro_layer_html = """
-<script>
-document.addEventListener("DOMContentLoaded", function() {
 
-    setTimeout(function() {
-
-        document.querySelectorAll(
-            ".leaflet-control-layers-overlays label"
-        ).forEach(function(label) {
-
-            if (
-                label.textContent
-                    .trim()
-                    .startsWith("macro_element_")
-            ) {
-                label.style.display = "none";
-            }
-
-        });
-
-    }, 500);
-
-});
-</script>
-"""
-
-m.get_root().html.add_child(
-    folium.Element(hide_macro_layer_html)
-)
 
 
 # ============================================================
