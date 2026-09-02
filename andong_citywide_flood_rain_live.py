@@ -2297,6 +2297,225 @@ m.get_root().html.add_child(
 )
 
 # ============================================================
+# 기상청 호우특보 표시
+# warning.json은 별도 5분 자동화에서 갱신
+# ============================================================
+
+warning_panel_html = """
+<style>
+
+#kmaWarningPanel {
+    position:fixed;
+    top:65px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10001;
+
+    display:none;
+
+    min-width:260px;
+    max-width:420px;
+
+    background:rgba(190, 0, 0, 0.96);
+    color:white;
+
+    border:2px solid white;
+    border-radius:8px;
+
+    padding:9px 14px;
+
+    box-shadow:
+        0 3px 10px
+        rgba(0,0,0,0.40);
+
+    font-family:'Malgun Gothic';
+    text-align:center;
+}
+
+#kmaWarningTitle {
+    font-size:15px;
+    font-weight:bold;
+    margin-bottom:3px;
+}
+
+#kmaWarningLevel {
+    font-size:17px;
+    font-weight:bold;
+}
+
+#kmaWarningInfo {
+    margin-top:4px;
+    font-size:11px;
+    line-height:1.5;
+}
+
+@media screen and (max-width:768px) {
+
+    #kmaWarningPanel {
+        top:58px;
+        min-width:220px;
+        max-width:82vw;
+        padding:7px 10px;
+    }
+
+    #kmaWarningTitle {
+        font-size:12px;
+    }
+
+    #kmaWarningLevel {
+        font-size:14px;
+    }
+
+    #kmaWarningInfo {
+        font-size:9px;
+    }
+}
+
+</style>
+
+
+<div id="kmaWarningPanel">
+
+    <div id="kmaWarningTitle">
+        ⚠ 기상청 기상특보
+    </div>
+
+    <div id="kmaWarningLevel">
+    </div>
+
+    <div id="kmaWarningInfo">
+    </div>
+
+</div>
+
+
+<script>
+
+function loadKmaWarning() {
+
+    fetch(
+        "warning.json?t=" + Date.now()
+    )
+
+    .then(function(response) {
+
+        if (!response.ok) {
+            throw new Error(
+                "warning.json 불러오기 실패"
+            );
+        }
+
+        return response.json();
+
+    })
+
+    .then(function(data) {
+
+        var panel =
+            document.getElementById(
+                "kmaWarningPanel"
+            );
+
+        var level =
+            document.getElementById(
+                "kmaWarningLevel"
+            );
+
+        var info =
+            document.getElementById(
+                "kmaWarningInfo"
+            );
+
+
+        if (data.active === true) {
+
+            panel.style.display =
+                "block";
+
+            level.innerText =
+                data.level + " 발효 중";
+
+
+            var infoText =
+                "대상 : "
+                + (data.area || "안동시");
+
+
+            if (data.announce_time) {
+
+                infoText +=
+                    " | 발표 : "
+                    + data.announce_time;
+            }
+
+
+            if (data.effective_time) {
+
+                infoText +=
+                    " | 발효 : "
+                    + data.effective_time;
+            }
+
+
+            info.innerText =
+                infoText;
+
+
+            if (
+                data.level
+                === "호우경보"
+            ) {
+
+                panel.style.background =
+                    "rgba(180, 0, 0, 0.97)";
+
+            } else {
+
+                panel.style.background =
+                    "rgba(230, 110, 0, 0.97)";
+            }
+
+        } else {
+
+            panel.style.display =
+                "none";
+        }
+
+    })
+
+    .catch(function(error) {
+
+        console.log(
+            "기상청 특보정보:",
+            error
+        );
+
+    });
+}
+
+
+// 처음 접속할 때 확인
+loadKmaWarning();
+
+
+// 지도를 계속 열어둔 경우에도
+// 1분마다 warning.json 재확인
+setInterval(
+    loadKmaWarning,
+    60000
+);
+
+</script>
+"""
+
+
+m.get_root().html.add_child(
+    folium.Element(
+        warning_panel_html
+    )
+)
+
+# ============================================================
 # 모바일 화면 최적화
 # ============================================================
 
