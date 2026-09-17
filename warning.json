@@ -4,5 +4,6 @@
   "area": null,
   "announce_time": null,
   "effective_time": null,
-  "checked_at": "2026-09-17 10:14:46"
+  "checked_at": "2026-09-17 10:26:53",
+  "error": "403 Client Error: Forbidden for url: https://www.weather.go.kr/w/wnuri-fct2021/weather/today-warning.do"
 }
